@@ -1,0 +1,14 @@
+{
+  "base_model": "microsoft/BioGPT-Large",
+  "use_peft": true,
+  "lora_r": 16,
+  "lora_alpha": 32,
+  "entity_types": [
+    "Chemical",
+    "Disease"
+  ],
+  "relation_types": [
+    "induces",
+    "no_relation"
+  ]
+}

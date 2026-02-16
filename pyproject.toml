@@ -1,0 +1,35 @@
+[project]
+name = "graph-rag"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "neo4j>=6.1.0",
+    "protobuf>=6.33.5",
+    "pymupdf>=1.27.1",
+    "sentencepiece>=0.2.1",
+    "torch>=2.10.0",
+    "transformers>=5.1.0",
+    "datasets>=3.0.0",
+    "accelerate>=1.0.0",
+    "seqeval>=1.2.2",
+    "evaluate>=0.4.0",
+    "tqdm>=4.66.0",
+    "peft>=0.14.0",
+    "sacremoses>=0.1.1",
+    "pyarrow>=19.0.0",
+    "pandas>=2.2.0",
+    "huggingface-hub>=0.30.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests that require model download and GPU (deselect with '-m \"not slow\"')",
+    "memgraph: marks tests that require a running Memgraph instance (deselect with '-m \"not memgraph\"')",
+]

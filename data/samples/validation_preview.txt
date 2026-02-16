@@ -1,0 +1,166 @@
+================================================================================
+VALIDATION SPLIT — 20 samples (20 positive, 0 negative)
+================================================================================
+
+--- Sample 1 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Tricuspid valve regurgitation and lithium carbonate toxicity in a newborn infant. A newborn with massive tricuspid regurgitation, atrial flutter, congestive heart failure, and a high serum lithium level is described. This is the first patient to initially manifest tricuspid regurgitation and atrial flutter, and the 11th described patient with cardiac disease among infants exposed to lithium compounds in the first trimester of pregnancy. Sixty-three percent of these infants had tricuspid valve involvement. L
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'lithium carbonate'}) MERGE (t:Disease {name: 'cyanosis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'Lithium carbonate'}) MERGE (t:Disease {name: 'cyanosis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'lithium carbonate'}) MERGE (t:Disease {name: 'cardiac arrhythmia'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'Lithium carbonate'}) MERGE (t:Disease {name: 'cardiac arrhythmia'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'lithium carbonate'}) MERGE (t:Disease {name: 'neurologic depression'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'Lithium carbonate'}) MERGE (t:Disease {name: 'neurologic depression'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) lithium carbonate  --[:INDUCES]-->  (:Disease) cyanosis
+  (:Chemical) Lithium carbonate  --[:INDUCES]-->  (:Disease) cyanosis
+  (:Chemical) lithium carbonate  --[:INDUCES]-->  (:Disease) cardiac arrhythmia
+  (:Chemical) Lithium carbonate  --[:INDUCES]-->  (:Disease) cardiac arrhythmia
+  (:Chemical) lithium carbonate  --[:INDUCES]-->  (:Disease) neurologic depression
+  (:Chemical) Lithium carbonate  --[:INDUCES]-->  (:Disease) neurologic depression
+
+--- Sample 2 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Phenobarbital-induced dyskinesia in a neurologically-impaired child. A 2-year-old child with known neurologic impairment developed a dyskinesia soon after starting phenobarbital therapy for seizures. Known causes of movement disorders were eliminated after evaluation. On repeat challenge with phenobarbital, the dyskinesia recurred. Phenobarbital should be added to the list of anticonvulsant drugs that can cause movement disorders.
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'Phenobarbital'}) MERGE (t:Disease {name: 'dyskinesia'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'phenobarbital'}) MERGE (t:Disease {name: 'dyskinesia'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) Phenobarbital  --[:INDUCES]-->  (:Disease) dyskinesia
+  (:Chemical) phenobarbital  --[:INDUCES]-->  (:Disease) dyskinesia
+
+--- Sample 3 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Acute changes of blood ammonia may predict short-term adverse effects of valproic acid. Valproic acid (VPA) was given to 24 epileptic patients who were already being treated with other antiepileptic drugs. A standardized loading dose of VPA was administered, and venous blood was sampled at 0, 1, 2, 3, and 4 hours. Ammonia (NH3) was higher in patients who, during continuous therapy, complained of drowsiness (7 patients) than in those who were symptom-free (17 patients), although VPA plasma levels were simila
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'valproic acid'}) MERGE (t:Disease {name: 'drowsiness'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'Valproic acid'}) MERGE (t:Disease {name: 'drowsiness'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'VPA'}) MERGE (t:Disease {name: 'drowsiness'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'ammonia'}) MERGE (t:Disease {name: 'drowsiness'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'Ammonia'}) MERGE (t:Disease {name: 'drowsiness'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'NH3'}) MERGE (t:Disease {name: 'drowsiness'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) valproic acid  --[:INDUCES]-->  (:Disease) drowsiness
+  (:Chemical) Valproic acid  --[:INDUCES]-->  (:Disease) drowsiness
+  (:Chemical) VPA  --[:INDUCES]-->  (:Disease) drowsiness
+  (:Chemical) ammonia  --[:INDUCES]-->  (:Disease) drowsiness
+  (:Chemical) Ammonia  --[:INDUCES]-->  (:Disease) drowsiness
+  (:Chemical) NH3  --[:INDUCES]-->  (:Disease) drowsiness
+
+--- Sample 4 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Effects of calcitonin on rat extrapyramidal motor system: behavioral and biochemical data. The effects of i.v.c. injection of human and salmon calcitonin on biochemical and behavioral parameters related to the extrapyramidal motor system, were investigated in male rats. Calcitonin injection resulted in a potentiation of haloperidol-induced catalepsy and a partial prevention of apomorphine-induced hyperactivity. Moreover calcitonin induced a significant decrease in nigral GAD activity but no change in striat
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'haloperidol'}) MERGE (t:Disease {name: 'catalepsy'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'apomorphine'}) MERGE (t:Disease {name: 'hyperactivity'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) haloperidol  --[:INDUCES]-->  (:Disease) catalepsy
+  (:Chemical) apomorphine  --[:INDUCES]-->  (:Disease) hyperactivity
+
+--- Sample 5 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Development of isoproterenol-induced cardiac hypertrophy. The development of cardiac hypertrophy was studied in adult female Wistar rats following daily subcutaneous injections of isoproterenol (ISO) (0.3 mg/kg body weight). A time course was established for the change in tissue mass, RNA and DNA content, as well as hydroxyproline content. Heart weight increased 44% after 8 days of treatment with a half time of 3.4 days. Ventricular RNA content was elevated 26% after 24 h of a single injection and reached a
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'isoproterenol'}) MERGE (t:Disease {name: 'cardiac hypertrophy'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'ISO'}) MERGE (t:Disease {name: 'cardiac hypertrophy'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'isoproterenol'}) MERGE (t:Disease {name: 'hyperplasia'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'ISO'}) MERGE (t:Disease {name: 'hyperplasia'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) isoproterenol  --[:INDUCES]-->  (:Disease) cardiac hypertrophy
+  (:Chemical) ISO  --[:INDUCES]-->  (:Disease) cardiac hypertrophy
+  (:Chemical) isoproterenol  --[:INDUCES]-->  (:Disease) hyperplasia
+  (:Chemical) ISO  --[:INDUCES]-->  (:Disease) hyperplasia
+
+--- Sample 6 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Co-carcinogenic effect of retinyl acetate on forestomach carcinogenesis of male F344 rats induced with butylated hydroxyanisole. The potential modifying effect of retinyl acetate (RA) on butylated hydroxyanisole (BHA)-induced rat forestomach tumorigenesis was examined. Male F344 rats, 5 weeks of age, were maintained on diet containing 1% or 2% BHA by weight and simultaneously on drinking water supplemented with RA at various concentrations (w/v) for 52 weeks. In groups given 2% BHA, although marked hyperpla
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'butylated hydroxyanisole'}) MERGE (t:Disease {name: 'forestomach carcinogenesis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'butylated hydroxyanisole'}) MERGE (t:Disease {name: 'forestomach tumorigenesis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'butylated hydroxyanisole'}) MERGE (t:Disease {name: 'forestomach tumors'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'BHA'}) MERGE (t:Disease {name: 'forestomach carcinogenesis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'BHA'}) MERGE (t:Disease {name: 'forestomach tumorigenesis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'BHA'}) MERGE (t:Disease {name: 'forestomach tumors'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) butylated hydroxyanisole  --[:INDUCES]-->  (:Disease) forestomach carcinogenesis
+  (:Chemical) butylated hydroxyanisole  --[:INDUCES]-->  (:Disease) forestomach tumorigenesis
+  (:Chemical) butylated hydroxyanisole  --[:INDUCES]-->  (:Disease) forestomach tumors
+  (:Chemical) BHA  --[:INDUCES]-->  (:Disease) forestomach carcinogenesis
+  (:Chemical) BHA  --[:INDUCES]-->  (:Disease) forestomach tumorigenesis
+  (:Chemical) BHA  --[:INDUCES]-->  (:Disease) forestomach tumors
+
+--- Sample 7 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Ketanserin pretreatment reverses alfentanil-induced muscle rigidity. Systemic pretreatment with ketanserin, a relatively specific type-2 serotonin receptor antagonist, significantly attenuated the muscle rigidity produced in rats by the potent short-acting opiate agonist alfentanil. Following placement of subcutaneous electrodes in each animal's left gastrocnemius muscle, rigidity was assessed by analyzing root-mean-square electromyographic activity. Intraperitoneal ketanserin administration at doses of 0.6
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'alfentanil'}) MERGE (t:Disease {name: 'muscle rigidity'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'alfentanil'}) MERGE (t:Disease {name: 'rigidity'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) alfentanil  --[:INDUCES]-->  (:Disease) muscle rigidity
+  (:Chemical) alfentanil  --[:INDUCES]-->  (:Disease) rigidity
+
+--- Sample 8 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Glycopyrronium requirements for antagonism of the muscarinic side effects of edrophonium. We have compared, in 60 adult patients, the cardiovascular effects of glycopyrronium 5 micrograms kg-1 and 10 micrograms kg-1 given either simultaneously or 1 min before edrophonium 1 mg kg-1. Significant differences between the four groups were detected (P less than 0.001). Both groups receiving 10 micrograms kg-1 showed increases in heart rate of up to 30 beat min-1 (95% confidence limits 28-32 beat min-1). Use of gl
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'edrophonium'}) MERGE (t:Disease {name: 'bradycardias'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) edrophonium  --[:INDUCES]-->  (:Disease) bradycardias
+
+--- Sample 9 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Involvement of locus coeruleus and noradrenergic neurotransmission in fentanyl-induced muscular rigidity in the rat. Whereas muscular rigidity is a well-known side effect that is associated with high-dose fentanyl anesthesia, a paucity of information exists with regard to its underlying mechanism(s). We investigated in this study the possible engagement of locus coeruleus of the pons in this phenomenon, using male Sprague-Dawley rats anesthetized with ketamine. Under proper control of respiration, body temp
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'fentanyl'}) MERGE (t:Disease {name: 'muscular rigidity'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) fentanyl  --[:INDUCES]-->  (:Disease) muscular rigidity
+
+--- Sample 10 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Cerebral sinus thrombosis as a potential hazard of antifibrinolytic treatment in menorrhagia. We describe a 42-year-old woman who developed superior sagittal and left transverse sinus thrombosis associated with prolonged epsilon-aminocaproic acid therapy for menorrhagia. This antifibrinolytic agent has been used in women with menorrhagia to promote clotting and reduce blood loss. Although increased risk of thromboembolic disease has been reported during treatment with epsilon-aminocaproic acid, cerebral sin
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'epsilon-aminocaproic acid'}) MERGE (t:Disease {name: 'sagittal sinus thrombosis'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) epsilon-aminocaproic acid  --[:INDUCES]-->  (:Disease) sagittal sinus thrombosis
+

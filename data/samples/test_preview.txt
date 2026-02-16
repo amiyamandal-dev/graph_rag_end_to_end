@@ -1,0 +1,186 @@
+================================================================================
+TEST SPLIT — 20 samples (20 positive, 0 negative)
+================================================================================
+
+--- Sample 1 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Famotidine-associated delirium. A series of six cases. Famotidine is a histamine H2-receptor antagonist used in inpatient settings for prevention of stress ulcers and is showing increasing popularity because of its low cost. Although all of the currently available H2-receptor antagonists have shown the propensity to cause delirium, only two previously reported cases have been associated with famotidine. The authors report on six cases of famotidine-associated delirium in hospitalized patients who cleared co
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'Famotidine'}) MERGE (t:Disease {name: 'delirium'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'famotidine'}) MERGE (t:Disease {name: 'delirium'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) Famotidine  --[:INDUCES]-->  (:Disease) delirium
+  (:Chemical) famotidine  --[:INDUCES]-->  (:Disease) delirium
+
+--- Sample 2 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Indomethacin induced hypotension in sodium and volume depleted rats. After a single oral dose of 4 mg/kg indomethacin (IDM) to sodium and volume depleted rats plasma renin activity (PRA) and systolic blood pressure fell significantly within four hours. In sodium repleted animals indomethacin did not change systolic blood pressure (BP) although plasma renin activity was decreased. Thus, indomethacin by inhibition of prostaglandin synthesis may diminish the blood pressure maintaining effect of the stimulated 
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'Indomethacin'}) MERGE (t:Disease {name: 'hypotension'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'indomethacin'}) MERGE (t:Disease {name: 'hypotension'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'IDM'}) MERGE (t:Disease {name: 'hypotension'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) Indomethacin  --[:INDUCES]-->  (:Disease) hypotension
+  (:Chemical) indomethacin  --[:INDUCES]-->  (:Disease) hypotension
+  (:Chemical) IDM  --[:INDUCES]-->  (:Disease) hypotension
+
+--- Sample 3 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Late-onset scleroderma renal crisis induced by tacrolimus and prednisolone: a case report. Scleroderma renal crisis (SRC) is a rare complication of systemic sclerosis (SSc) but can be severe enough to require temporary or permanent renal replacement therapy. Moderate to high dose corticosteroid use is recognized as a major risk factor for SRC. Furthermore, there have been reports of thrombotic microangiopathy precipitated by cyclosporine in patients with SSc. In this article, we report a patient with SRC in
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'cyclosporine'}) MERGE (t:Disease {name: 'thrombotic microangiopathy'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'corticosteroid'}) MERGE (t:Disease {name: 'systemic sclerosis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'corticosteroid'}) MERGE (t:Disease {name: 'SSc'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'corticosteroids'}) MERGE (t:Disease {name: 'systemic sclerosis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'corticosteroids'}) MERGE (t:Disease {name: 'SSc'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'tacrolimus'}) MERGE (t:Disease {name: 'systemic sclerosis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'tacrolimus'}) MERGE (t:Disease {name: 'SSc'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) cyclosporine  --[:INDUCES]-->  (:Disease) thrombotic microangiopathy
+  (:Chemical) corticosteroid  --[:INDUCES]-->  (:Disease) systemic sclerosis
+  (:Chemical) corticosteroid  --[:INDUCES]-->  (:Disease) SSc
+  (:Chemical) corticosteroids  --[:INDUCES]-->  (:Disease) systemic sclerosis
+  (:Chemical) corticosteroids  --[:INDUCES]-->  (:Disease) SSc
+  (:Chemical) tacrolimus  --[:INDUCES]-->  (:Disease) systemic sclerosis
+  (:Chemical) tacrolimus  --[:INDUCES]-->  (:Disease) SSc
+
+--- Sample 4 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: The risk and associated factors of methamphetamine psychosis in methamphetamine-dependent patients in Malaysia. OBJECTIVE: The objective of this study was to determine the risk of lifetime and current methamphetamine-induced psychosis in patients with methamphetamine dependence. The association between psychiatric co-morbidity and methamphetamine-induced psychosis was also studied. METHODS: This was a cross-sectional study conducted concurrently at a teaching hospital and a drug rehabilitation center in Mal
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'methamphetamine'}) MERGE (t:Disease {name: 'psychosis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'methamphetamine'}) MERGE (t:Disease {name: 'psychotic symptoms'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'methamphetamine'}) MERGE (t:Disease {name: 'bipolar disorder'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'methamphetamine'}) MERGE (t:Disease {name: 'antisocial personality disorder'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'methamphetamine'}) MERGE (t:Disease {name: 'antisocial personality'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) methamphetamine  --[:INDUCES]-->  (:Disease) psychosis
+  (:Chemical) methamphetamine  --[:INDUCES]-->  (:Disease) psychotic symptoms
+  (:Chemical) methamphetamine  --[:INDUCES]-->  (:Disease) bipolar disorder
+  (:Chemical) methamphetamine  --[:INDUCES]-->  (:Disease) antisocial personality disorder
+  (:Chemical) methamphetamine  --[:INDUCES]-->  (:Disease) antisocial personality
+
+--- Sample 5 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Cerebellar sensory processing alterations impact motor cortical plasticity in Parkinson's disease: clues from dyskinetic patients. The plasticity of primary motor cortex (M1) in patients with Parkinson's disease (PD) and levodopa-induced dyskinesias (LIDs) is severely impaired. We recently reported in young healthy subjects that inhibitory cerebellar stimulation enhanced the sensorimotor plasticity of M1 that was induced by paired associative stimulation (PAS). This study demonstrates that the deficient sen
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'levodopa'}) MERGE (t:Disease {name: 'dyskinetic'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'levodopa'}) MERGE (t:Disease {name: 'dyskinesias'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'levodopa'}) MERGE (t:Disease {name: 'LIDs'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'levodopa'}) MERGE (t:Disease {name: 'abnormal involuntary movements'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) levodopa  --[:INDUCES]-->  (:Disease) dyskinetic
+  (:Chemical) levodopa  --[:INDUCES]-->  (:Disease) dyskinesias
+  (:Chemical) levodopa  --[:INDUCES]-->  (:Disease) LIDs
+  (:Chemical) levodopa  --[:INDUCES]-->  (:Disease) abnormal involuntary movements
+
+--- Sample 6 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: The function of P2X3 receptor and NK1 receptor antagonists on cyclophosphamide-induced cystitis in rats. PURPOSE: The purpose of the study is to explore the function of P2X3 and NK1 receptors antagonists on cyclophosphamide (CYP)-induced cystitis in rats. METHODS: Sixty female Sprague-Dawley (SD) rats were randomly divided into three groups. The rats in the control group were intraperitoneally (i.p.) injected with 0.9% saline (4 ml/kg); the rats in the model group were i.p. injected with CYP (150 mg/kg); an
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'cyclophosphamide'}) MERGE (t:Disease {name: 'cystitis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'CYP'}) MERGE (t:Disease {name: 'cystitis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'Cyclophosphamide'}) MERGE (t:Disease {name: 'cystitis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'cyclophosphamide'}) MERGE (t:Disease {name: 'pain'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'CYP'}) MERGE (t:Disease {name: 'pain'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'Cyclophosphamide'}) MERGE (t:Disease {name: 'pain'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'cyclophosphamide'}) MERGE (t:Disease {name: 'edema'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'CYP'}) MERGE (t:Disease {name: 'edema'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'Cyclophosphamide'}) MERGE (t:Disease {name: 'edema'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) cyclophosphamide  --[:INDUCES]-->  (:Disease) cystitis
+  (:Chemical) CYP  --[:INDUCES]-->  (:Disease) cystitis
+  (:Chemical) Cyclophosphamide  --[:INDUCES]-->  (:Disease) cystitis
+  (:Chemical) cyclophosphamide  --[:INDUCES]-->  (:Disease) pain
+  (:Chemical) CYP  --[:INDUCES]-->  (:Disease) pain
+  (:Chemical) Cyclophosphamide  --[:INDUCES]-->  (:Disease) pain
+  (:Chemical) cyclophosphamide  --[:INDUCES]-->  (:Disease) edema
+  (:Chemical) CYP  --[:INDUCES]-->  (:Disease) edema
+  (:Chemical) Cyclophosphamide  --[:INDUCES]-->  (:Disease) edema
+
+--- Sample 7 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Acute hepatitis associated with clopidogrel: a case report and review of the literature. Drug-induced hepatotoxicity is a common cause of acute hepatitis, and the recognition of the responsible drug may be difficult. We describe a case of clopidogrel-related acute hepatitis. The diagnosis is strongly suggested by an accurate medical history and liver biopsy. Reports about cases of hepatotoxicity due to clopidogrel are increasing in the last few years, after the increased use of this drug. In conclusion, we 
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'clopidogrel'}) MERGE (t:Disease {name: 'hepatitis'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'clopidogrel'}) MERGE (t:Disease {name: 'hepatotoxicity'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'clopidogrel'}) MERGE (t:Disease {name: 'hepatic injury'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) clopidogrel  --[:INDUCES]-->  (:Disease) hepatitis
+  (:Chemical) clopidogrel  --[:INDUCES]-->  (:Disease) hepatotoxicity
+  (:Chemical) clopidogrel  --[:INDUCES]-->  (:Disease) hepatic injury
+
+--- Sample 8 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Bortezomib and dexamethasone as salvage therapy in patients with relapsed/refractory multiple myeloma: analysis of long-term clinical outcomes. Bortezomib (bort)-dexamethasone (dex) is an effective therapy for relapsed/refractory (R/R) multiple myeloma (MM). This retrospective study investigated the combination of bort (1.3 mg/m(2) on days 1, 4, 8, and 11 every 3 weeks) and dex (20 mg on the day of and the day after bort) as salvage treatment in 85 patients with R/R MM after prior autologous stem cell trans
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'dexamethasone'}) MERGE (t:Disease {name: 'peripheral neuropathy'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'dex'}) MERGE (t:Disease {name: 'peripheral neuropathy'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'Bortezomib'}) MERGE (t:Disease {name: 'peripheral neuropathy'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'bort'}) MERGE (t:Disease {name: 'peripheral neuropathy'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'Bort'}) MERGE (t:Disease {name: 'peripheral neuropathy'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) dexamethasone  --[:INDUCES]-->  (:Disease) peripheral neuropathy
+  (:Chemical) dex  --[:INDUCES]-->  (:Disease) peripheral neuropathy
+  (:Chemical) Bortezomib  --[:INDUCES]-->  (:Disease) peripheral neuropathy
+  (:Chemical) bort  --[:INDUCES]-->  (:Disease) peripheral neuropathy
+  (:Chemical) Bort  --[:INDUCES]-->  (:Disease) peripheral neuropathy
+
+--- Sample 9 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Pubertal exposure to Bisphenol A increases anxiety-like behavior and decreases acetylcholinesterase activity of hippocampus in adult male mice. The negative effects of Bisphenol A (BPA) on neurodevelopment and behaviors have been well established. Acetylcholinesterase (AChE) is a regulatory enzyme which is involved in anxiety-like behavior. This study investigated behavioral phenotypes and AChE activity in male mice following BPA exposure during puberty. On postnatal day (PND) 35, male mice were exposed to 
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'Bisphenol A'}) MERGE (t:Disease {name: 'anxiety'}) MERGE (h)-[:INDUCES]->(t)
+MERGE (h:Chemical {name: 'BPA'}) MERGE (t:Disease {name: 'anxiety'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) Bisphenol A  --[:INDUCES]-->  (:Disease) anxiety
+  (:Chemical) BPA  --[:INDUCES]-->  (:Disease) anxiety
+
+--- Sample 10 ---
+
+PROMPT:
+Generate Cypher to store medical relations from text: Biochemical effects of Solidago virgaurea extract on experimental cardiotoxicity. Cardiovascular diseases (CVDs) are the major health problem of advanced as well as developing countries of the world. The aim of the present study was to investigate the protective effect of the Solidago virgaurea extract on isoproterenol-induced cardiotoxicity in rats. The subcutaneous injection of isoproterenol (30 mg/kg) into rats twice at an interval of 24 h, for two consecutive days, led to a significant increase in serum
+Cypher:
+
+TARGET:
+MERGE (h:Chemical {name: 'isoproterenol'}) MERGE (t:Disease {name: 'cardiotoxicity'}) MERGE (h)-[:INDUCES]->(t)
+
+GRAPH EDGES:
+  (:Chemical) isoproterenol  --[:INDUCES]-->  (:Disease) cardiotoxicity
+
