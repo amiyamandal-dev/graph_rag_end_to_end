@@ -17,7 +17,7 @@ from transformers import BioGptForCausalLM, BioGptTokenizer
 from graph_rag.data_preparation import CYPHER_PROMPT_PREFIX, CYPHER_PROMPT_SUFFIX
 from graph_rag.graph_store import parse_cypher_to_triplets
 
-DEFAULT_MODEL = "microsoft/BioGPT-Large"
+DEFAULT_MODEL = "microsoft/BioGPT"
 
 # BC5CDR entity types
 DEFAULT_ENTITY_TYPES = [

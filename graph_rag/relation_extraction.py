@@ -8,7 +8,7 @@ import torch
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 DEFAULT_MODEL = "Babelscape/rebel-large"
-DEFAULT_BIOGPT_MODEL = "microsoft/BioGPT-Large"
+DEFAULT_BIOGPT_MODEL = "microsoft/BioGPT"
 DEFAULT_MEDICAL_MODEL = "models/biogpt_bc5cdr"
 
 ModelType = Literal["rebel", "medical", "biogpt"]

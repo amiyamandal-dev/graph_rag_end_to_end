@@ -23,63 +23,78 @@ from transformers import (
 )
 
 from graph_rag.data_preparation import (
+    CYPHER_PROMPT_PREFIX,
+    CYPHER_PROMPT_SUFFIX,
     convert_bc5cdr_to_training_format,
     load_bc5cdr_dataset,
 )
+from graph_rag.graph_store import parse_cypher_to_triplets
 
-DEFAULT_MODEL = "microsoft/BioGPT-Large"
+DEFAULT_MODEL = "microsoft/BioGPT"
 
 
 @dataclass
 class TrainingConfig:
-    """Configuration for BioGPT training with optimizations."""
+    """Configuration for BioGPT text-to-Cypher training.
+
+    Optimised for the smaller BioGPT (390M, hidden=1024, max_pos=1024).
+    Key differences vs a Large config:
+      - LoRA rank 32 → more adapter capacity to compensate for smaller base
+      - All four attention projections targeted (q/k/v/out)
+      - Higher dropout (0.1) to prevent overfitting
+      - More epochs (6) with patient early stopping
+      - Larger effective batch (8×2=16) — fits easily in memory
+      - Sequence budget split 448+192=640 (within 1024 position limit)
+    """
 
     # Model
     base_model: str = DEFAULT_MODEL
 
-    # PEFT (Parameter-Efficient Fine-Tuning)
+    # PEFT — higher rank + more modules for smaller base model
     use_peft: bool = True
-    lora_r: int = 16  # LoRA rank
-    lora_alpha: int = 32  # LoRA alpha
-    lora_dropout: float = 0.05
-    lora_target_modules: list[str] = field(default_factory=lambda: ["q_proj", "v_proj"])
+    lora_r: int = 32
+    lora_alpha: int = 64  # 2× rank — standard scaling
+    lora_dropout: float = 0.1  # stronger regularisation for small model
+    lora_target_modules: list[str] = field(
+        default_factory=lambda: ["q_proj", "k_proj", "v_proj", "out_proj"]
+    )
 
-    # Training
-    batch_size: int = 4
-    num_epochs: int = 3
-    learning_rate: float = 2e-4  # Higher for LoRA
+    # Training — larger effective batch, more epochs
+    batch_size: int = 8
+    num_epochs: int = 6
+    learning_rate: float = 3e-4  # slightly higher for LoRA + small model
     weight_decay: float = 0.01
-    warmup_ratio: float = 0.1
-    warmup_steps: int = 0  # Overrides warmup_ratio if set
+    warmup_ratio: float = 0.06
+    warmup_steps: int = 0  # overrides warmup_ratio if > 0
     max_grad_norm: float = 1.0
 
-    # Gradient optimization
-    gradient_accumulation_steps: int = 4
+    # Gradient optimisation
+    gradient_accumulation_steps: int = 2  # effective batch = 8×2 = 16
     gradient_checkpointing: bool = True
 
     # Precision
     fp16: bool = False
-    bf16: bool = False  # Preferred for Apple Silicon and newer GPUs
+    bf16: bool = False  # Apple Silicon: set True for speed
 
-    # Early stopping
+    # Early stopping — more patience for longer training
     early_stopping: bool = True
-    early_stopping_patience: int = 3
-    early_stopping_threshold: float = 0.01  # Minimum improvement
+    early_stopping_patience: int = 5
+    early_stopping_threshold: float = 0.005
 
-    # Data
-    max_input_length: int = 512
-    max_target_length: int = 128
+    # Data — fits within BioGPT's 1024 position limit (448 + 192 = 640)
+    max_input_length: int = 448
+    max_target_length: int = 192
     include_negative_samples: bool = True
     max_samples: int | None = None
 
     # Output
     output_dir: str = "models/biogpt_bc5cdr"
-    save_best_only: bool = True  # Only save best model
+    save_best_only: bool = True
     eval_steps: int = 100
     log_steps: int = 10
 
     # Scheduler
-    scheduler_type: str = "cosine"  # "linear", "cosine", "constant"
+    scheduler_type: str = "cosine"
 
     # Device
     device: str = "auto"
@@ -304,6 +319,103 @@ def get_autocast_context(device: torch.device, config: TrainingConfig):
         return torch.enable_grad()
 
 
+def preview_test_samples(
+    model: Any,
+    tokenizer: BioGptTokenizer,
+    test_samples: list[dict],
+    device: torch.device,
+    epoch: int,
+    config: TrainingConfig,
+) -> None:
+    """Run inference on a few test samples and print generated vs expected Cypher.
+
+    Called after each epoch's evaluation to give a qualitative view of model
+    progress during training.
+    """
+    model.eval()
+    max_gen_length = config.max_input_length + config.max_target_length
+
+    print(f"\n{'─' * 70}")
+    print(f"  TEST PREVIEW — Epoch {epoch} ({len(test_samples)} samples)")
+    print(f"{'─' * 70}")
+
+    total_expected = 0
+    total_matched = 0
+
+    for i, sample in enumerate(test_samples):
+        prompt = sample["prompt"]
+        expected_target = sample["target"]
+
+        # Tokenize the prompt
+        inputs = tokenizer(
+            prompt,
+            return_tensors="pt",
+            max_length=config.max_input_length,
+            truncation=True,
+            padding=True,
+        )
+        input_ids = inputs["input_ids"].to(device)
+        attention_mask = inputs["attention_mask"].to(device)
+
+        with torch.no_grad():
+            outputs = model.generate(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                max_length=max_gen_length,
+                num_beams=3,
+                num_return_sequences=1,
+                pad_token_id=tokenizer.pad_token_id,
+            )
+
+        generated = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+        # Strip prompt from generated text
+        if CYPHER_PROMPT_PREFIX in generated:
+            cypher_part = generated.split("Cypher:")[-1].strip()
+        else:
+            cypher_part = generated.strip()
+
+        # Parse triplets for comparison
+        expected_triplets = parse_cypher_to_triplets(expected_target)
+        predicted_triplets = parse_cypher_to_triplets(cypher_part)
+
+        expected_keys = {
+            (t["head"].lower(), t["type"].lower(), t["tail"].lower())
+            for t in expected_triplets
+        }
+        predicted_keys = {
+            (t["head"].lower(), t["type"].lower(), t["tail"].lower())
+            for t in predicted_triplets
+        }
+        matched = expected_keys & predicted_keys
+
+        total_expected += len(expected_keys)
+        total_matched += len(matched)
+
+        # Extract short text snippet from prompt
+        raw_text = prompt
+        if "from text:" in raw_text:
+            raw_text = raw_text.split("from text:", 1)[1]
+        if "\nCypher:" in raw_text:
+            raw_text = raw_text.rsplit("\nCypher:", 1)[0]
+        raw_text = raw_text.strip()[:100]
+
+        status = "MATCH" if matched else ("OK" if not expected_keys and not predicted_keys else "MISS")
+
+        print(f"\n  [{i + 1}] {status}  text: {raw_text}...")
+        print(f"      Expected ({len(expected_keys)} triplets): {expected_target[:120]}")
+        print(f"      Generated({len(predicted_keys)} triplets): {cypher_part[:120]}")
+        if matched:
+            print(f"      Matched: {len(matched)}/{len(expected_keys)}")
+
+    # Summary
+    recall = total_matched / max(total_expected, 1)
+    print(f"\n  Summary: {total_matched}/{total_expected} triplets matched (recall: {recall:.1%})")
+    print(f"{'─' * 70}\n")
+
+    model.train()
+
+
 def train(config: TrainingConfig) -> None:
     """Train BioGPT text-to-Cypher with PEFT and optimizations."""
     # Set seed for reproducibility
@@ -362,8 +474,16 @@ def train(config: TrainingConfig) -> None:
         train_samples = train_samples[: config.max_samples]
         eval_samples = eval_samples[: min(config.max_samples, len(eval_samples))]
 
+    # Load test samples for periodic inference preview (max 5)
+    test_raw = load_bc5cdr_dataset("test")
+    test_data = convert_bc5cdr_to_training_format(
+        test_raw, include_negative_samples=False
+    )
+    test_preview_samples = test_data["samples"][:5]
+
     print(f"Training samples: {len(train_samples)}")
     print(f"Evaluation samples: {len(eval_samples)}")
+    print(f"Test preview samples: {len(test_preview_samples)}")
 
     # Create datasets
     train_dataset = CypherDataset(
@@ -542,11 +662,27 @@ def train(config: TrainingConfig) -> None:
         else:
             print(f"No improvement (best: {best_loss:.4f})")
 
+        # Test sample preview — qualitative check on generation quality
+        if test_preview_samples:
+            preview_test_samples(
+                model, tokenizer, test_preview_samples, device, epoch + 1, config
+            )
+
         # Early stopping check
-        if early_stopper and early_stopper(eval_loss, global_step):
-            print(f"\nEarly stopping triggered at epoch {epoch + 1}")
-            print(f"Best loss: {early_stopper.best_value:.4f} at step {early_stopper.best_step}")
-            break
+        if early_stopper:
+            should_stop = early_stopper(eval_loss, global_step)
+            remaining = config.early_stopping_patience - early_stopper.counter
+            if early_stopper.counter > 0:
+                print(
+                    f"Early stopping: no improvement for {early_stopper.counter}/{config.early_stopping_patience} "
+                    f"epochs (best: {early_stopper.best_value:.4f})"
+                )
+            else:
+                print(f"Early stopping: patience reset (best: {early_stopper.best_value:.4f})")
+            if should_stop:
+                print(f"\n*** Early stopping triggered at epoch {epoch + 1} ***")
+                print(f"Best loss: {early_stopper.best_value:.4f} at step {early_stopper.best_step}")
+                break
 
     print(f"\nTraining complete. Best loss: {best_loss:.4f}")
     print(f"Model saved to: {output_dir}")
@@ -606,18 +742,18 @@ def main():
     # PEFT
     parser.add_argument("--use-peft", action="store_true", default=True)
     parser.add_argument("--no-peft", action="store_false", dest="use_peft")
-    parser.add_argument("--lora-r", type=int, default=16)
-    parser.add_argument("--lora-alpha", type=int, default=32)
-    parser.add_argument("--lora-dropout", type=float, default=0.05)
+    parser.add_argument("--lora-r", type=int, default=32)
+    parser.add_argument("--lora-alpha", type=int, default=64)
+    parser.add_argument("--lora-dropout", type=float, default=0.1)
 
     # Training
     parser.add_argument("--output-dir", type=str, default="models/biogpt_bc5cdr")
-    parser.add_argument("--batch-size", type=int, default=4)
-    parser.add_argument("--epochs", type=int, default=3)
-    parser.add_argument("--lr", type=float, default=2e-4)
+    parser.add_argument("--batch-size", type=int, default=8)
+    parser.add_argument("--epochs", type=int, default=6)
+    parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--weight-decay", type=float, default=0.01)
-    parser.add_argument("--warmup-ratio", type=float, default=0.1)
-    parser.add_argument("--gradient-accumulation-steps", type=int, default=4)
+    parser.add_argument("--warmup-ratio", type=float, default=0.06)
+    parser.add_argument("--gradient-accumulation-steps", type=int, default=2)
     parser.add_argument("--max-grad-norm", type=float, default=1.0)
 
     # Precision
@@ -631,7 +767,7 @@ def main():
     # Early stopping
     parser.add_argument("--early-stopping", action="store_true", default=True)
     parser.add_argument("--no-early-stopping", action="store_false", dest="early_stopping")
-    parser.add_argument("--early-stopping-patience", type=int, default=3)
+    parser.add_argument("--early-stopping-patience", type=int, default=5)
 
     # Scheduler
     parser.add_argument("--scheduler", type=str, default="cosine", choices=["linear", "cosine", "constant"])
